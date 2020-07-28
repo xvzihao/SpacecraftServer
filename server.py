@@ -1,12 +1,18 @@
+import ssl
 import subprocess
 import sys
 import time
+from pathlib import Path
+from socket import socket
 from ssl import create_default_context
 from threading import Thread
 from urllib.request import urlopen, Request
+from mcipc.rcon import Client
 
-from flask import Flask, json
+from flask import Flask, json, request
 from json import load as json_file
+
+from mcrcon import MCRcon
 from psutil import Process
 
 from locals import *
@@ -18,6 +24,8 @@ class APIServer:
             import_name=""
         )
         self.running = False
+        self.ready = False
+        self.players = []
 
         @self.api.route('/stop', methods=['GET'])
         def op_stop():
@@ -25,18 +33,46 @@ class APIServer:
             return "api server is stopped"
 
         @self.api.route('/mods/planned', methods=['GET'])
-        def get_modes_planned():
+        def get_mods_planned():
             with open("./mods.json") as f:
                 return json.dumps(json_file(f))
 
         @self.api.route("/mods/installed", methods=['GET'])
-        def get_modes_installed():
+        def get_mods_installed():
             return json.dumps(
                 listdir("./server/mods/")
             )
 
+        @self.api.route("/players", methods=["GET"])
+        def get_players():
+            return str(self.players)
+
+        @self.api.route("/ready", methods=["GET"])
+        def get_ready():
+            return str(self.ready)
+
+    def rcon_thread(self):
+        while self.running:
+            try:
+                s = socket()
+                s.settimeout(1)
+                s.connect(('localhost', 25575))
+                s.close()
+                rcon = MCRcon('localhost', PASSWORD)
+                rcon.connect()
+                self.ready = True
+                while self.running:
+                    time.sleep(2)
+                    self.players = [name for name in rcon.command("list").split(':')[1].split(', ') if name ]
+            except Exception as e:
+                self.ready = False
+                self.players = []
+                time.sleep(0.2)
+        print("rcon thread stopped")
+
     def launch(self):
         self.running = True
+        Thread(target=self.rcon_thread).start()
         self.api.run(
             host='0.0.0.0',
             port=2005
@@ -46,7 +82,7 @@ class APIServer:
         self.running = False
 
         def _stop():
-            time.sleep(0.5)
+            time.sleep(3)
             Process(PID).terminate()
 
         Thread(target=_stop).start()
@@ -140,7 +176,8 @@ def update_mods():
     with open("./mods.json") as f:
         mod_list = json_file(f)
     for mod in mod_list:
-        fetch_mod(mod_list[mod]['link'], mod)
+        if mod_list[mod]['server']:
+            fetch_mod(mod_list[mod]['link'], mod)
     print("Done. ")
 
 
@@ -149,7 +186,8 @@ def clean_mods():
         mod_list = json_file(f)
     planned = []
     for mod in mod_list:
-        planned.append(mod)
+        if mod_list[mod]['server']:
+            planned.append(mod)
 
     def is_mod(name):
         return name.endswith('.jar') or name.endswith('.litemod')
@@ -173,6 +211,8 @@ def update_server():
 
 
 def launch():
+    if not Path('server').exists():
+        os.mkdir('server')
     os.chdir('./server')
     subprocess.call('java -jar -Xmx4096m forge-1.12.2-14.23.5.2854.jar nogui')
 
@@ -206,4 +246,9 @@ if __name__ == '__main__':
             elif args[1] == 'clean':
                 clean_mods()
                 exit(0)
+        elif args[0] == 'discord':
+            from bot import SpaceCraftBot
+            bot = SpaceCraftBot()
+            bot.run(args[1])
+            exit(0)
     show_help()

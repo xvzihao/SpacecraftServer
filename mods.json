@@ -1,6 +1,27 @@
 {
   "BetterSwim-1.12.2-1.1.0.jar": {
     "link": "https://media.forgecdn.net/files/2818/3/ido-1.12.2-1.1.0.jar",
-    "optional": false
+    "client": true,
+    "server": true
+  },
+  "GalacticraftCore-1.12.2-4.0.2.280.jar": {
+    "link": "https://micdoodle8.com/new-builds/GC-1.12/280/GalacticraftCore-1.12.2-4.0.2.280.jar",
+    "client": true,
+    "server": true
+  },
+  "Galacticraft-Planets-1.12.2-4.0.2.280.jar": {
+    "link": "https://micdoodle8.com/new-builds/GC-1.12/280/Galacticraft-Planets-1.12.2-4.0.2.280.jar",
+    "client": true,
+    "server": true
+  },
+  "MicdoodleCore-1.12.2-4.0.2.280.jar": {
+    "link": "https://micdoodle8.com/new-builds/GC-1.12/280/MicdoodleCore-1.12.2-4.0.2.280.jar",
+    "client": true,
+    "server": true
+  },
+  "TickDynamic-1.12.2-1.0.2.jar": {
+    "link": "https://media.forgecdn.net/files/2737/879/TickDynamic-1.12.2-1.0.2.jar",
+    "client": false,
+    "server": true
   }
 }
