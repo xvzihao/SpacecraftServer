@@ -98,7 +98,8 @@ class SpaceCraftManager(Command):
                                     await rcon_title(
                                         rcon,
                                         {"text": "Welcome to", "color": "gold"},
-                                        {"text": "SpaceCraft Server", "color": "blue"}
+                                        {"text": "SpaceCraft Server", "color": "blue"},
+                                        mention=player
                                     )
                             except Exception as e:
                                 print(e)

@@ -18,12 +18,12 @@ async def rcon_message(rcon, msg, sound=True):
         rcon.command('execute @a ~ ~ ~ playsound minecraft:block.lever.click master @s ~ ~ ~ 2 2')
 
 
-async def rcon_title(rcon, msg, detail):
+async def rcon_title(rcon, msg, detail, mention="@a"):
     rcon.command('title @a subtitle ' + str(detail).replace("'", '"'))
     rcon.command('title @a title ' + str(msg).replace("'", '"'))
-    rcon.command('execute @a ~ ~ ~ playsound minecraft:block.note.bell master @s ~ ~ ~ 2 0.9')
+    rcon.command('execute '+mention+' ~ ~ ~ playsound minecraft:block.note.bell master @s ~ ~ ~ 2 0.9')
     await delay(0.15)
-    rcon.command('execute @a ~ ~ ~ playsound minecraft:block.note.bell master @s ~ ~ ~ 2 0.7')
+    rcon.command('execute '+mention+' ~ ~ ~ playsound minecraft:block.note.bell master @s ~ ~ ~ 2 0.7')
 
 
 

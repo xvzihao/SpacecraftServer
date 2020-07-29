@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="25b8da97-a1d8-4f3a-92c1-c7ecb239dacf" name="mc.alex-xu.site" url="http://mc.alex-xu.site">
+        <fileTransfer rootFolder="/root/alex/SpacecraftServer" accessType="SFTP" host="mc.alex-xu.site" port="22" sshConfigId="9190928e-e317-4c47-8402-55fcf176a957" sshConfig="root@mc.alex-xu.site:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
