@@ -28,7 +28,7 @@ class SpaceCraftManager(Command):
         await bot.get_channel(self.MC_CHANNEL).send(
             embed=Embed(
                 title="Initializing Server",
-                description="You can download AMCL to connect to this server from\n__https://github.com/xvzihao/SpacecraftClient/releases/download/1.5/Setup-AMCL.exe__",
+                description="You can download AMCL to connect to this server from\n__https://github.com/xvzihao/SpacecraftClient/releases/download/1.6/Setup-AMCL.exe__",
                 colour=0x87dc49
             )
         )
@@ -46,7 +46,7 @@ class SpaceCraftManager(Command):
                     if time.time() - empty_since > AUTO_STOP_TIME and not warned:
                         await bot.get_channel(self.MC_CHANNEL).send(":warning:** Server was idled for 10min. **")
                         await delay(1.2)
-                        await bot.get_channel(self.MC_CHANNEL).send(":warning:** Server will shutdown automatically within 1 minute if no one joins. **")
+                        await bot.get_channel(self.MC_CHANNEL).send(":warning:** Server will shutdown automatically within 1 minute if nobody joins. **")
                         warned = True
                     if time.time() - empty_since > AUTO_STOP_TIME + 60 and not stopped:
                         await bot.get_channel(self.MC_CHANNEL).send("<@&737090936680742982> stop server")
@@ -92,7 +92,7 @@ class SpaceCraftManager(Command):
                                 )
                                 await rcon_title(
                                     rcon,
-                                    {"text": "Welcome to join", "color": "gold"},
+                                    {"text": "Welcome to", "color": "gold"},
                                     {"text": "SpaceCraft Server", "color": "blue"}
                                 )
                             else:
