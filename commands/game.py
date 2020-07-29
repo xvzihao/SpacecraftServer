@@ -1,5 +1,6 @@
 import json
 import time
+from socket import socket
 
 from discord import Embed
 from asyncio import sleep as delay
@@ -87,13 +88,20 @@ class SpaceCraftManager(Command):
                                     colour=0x90c561
                                 )
                             )
-                            with MCRcon(ADDRESS, PASSWORD) as rcon:
-                                rcon.connect()
-                                await rcon_title(
-                                    rcon,
-                                    {"text": "Welcome to", "color": "gold"},
-                                    {"text": "SpaceCraft Server", "color": "blue"}
-                                )
+                            try:
+                                s = socket()
+                                s.settimeout(1)
+                                s.connect((ADDRESS, 25575))
+                                s.close()
+                                with MCRcon(ADDRESS, PASSWORD) as rcon:
+                                    rcon.connect()
+                                    await rcon_title(
+                                        rcon,
+                                        {"text": "Welcome to", "color": "gold"},
+                                        {"text": "SpaceCraft Server", "color": "blue"}
+                                    )
+                            except Exception as e:
+                                print(e)
                         else:
                             await bot.get_channel(self.MC_CHANNEL).send(
                                 embed=Embed(
