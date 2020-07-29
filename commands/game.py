@@ -46,72 +46,71 @@ class SpaceCraftManager(Command):
                     if time.time() - empty_since > AUTO_STOP_TIME and not warned:
                         await bot.get_channel(self.MC_CHANNEL).send(":warning:** Server was idled for 10min. **")
                         await delay(1.2)
-                        await bot.get_channel(self.MC_CHANNEL).send(":warning:** Server will shutdown automatically within 1 minute if nobody joins. **")
+                        await bot.get_channel(self.MC_CHANNEL).send(
+                            ":warning:** Server will shutdown automatically within 1 minute if nobody joins. **")
                         warned = True
                     if time.time() - empty_since > AUTO_STOP_TIME + 60 and not stopped:
                         await bot.get_channel(self.MC_CHANNEL).send("<@&737090936680742982> stop server")
                         stopped = True
 
-
-
     async def status_fetch_task(self, bot):
-        with MCRcon(ADDRESS, PASSWORD) as rcon:
-            rcon.connect()
-            while not bot.is_closed():
-                try:
-                    result = eval(await fetch("http://localhost:2005/ready"))
-                    if result != self.server_ready:
-                        self.server_ready = result
-                        if result:
-                            await bot.get_channel(self.MC_CHANNEL).send(
-                                embed=Embed(
-                                    title=f"SpaceCraft is ready",
-                                    description="**Server address:** __mc.alex-xu.site__",
-                                    colour=0x79f50a
-                                )
+        while not bot.is_closed():
+            try:
+                result = eval(await fetch("http://localhost:2005/ready"))
+                if result != self.server_ready:
+                    self.server_ready = result
+                    if result:
+                        await bot.get_channel(self.MC_CHANNEL).send(
+                            embed=Embed(
+                                title=f"SpaceCraft is ready",
+                                description="**Server address:** __mc.alex-xu.site__",
+                                colour=0x79f50a
                             )
-                        else:
-                            self.players = []
-                            await bot.get_channel(self.MC_CHANNEL).send(
-                                embed=Embed(
-                                    title=f"SpaceCraft is closed",
-                                    colour=0xff0000
-                                )
+                        )
+                    else:
+                        self.players = []
+                        await bot.get_channel(self.MC_CHANNEL).send(
+                            embed=Embed(
+                                title=f"SpaceCraft is closed",
+                                colour=0xff0000
                             )
+                        )
 
-                    result = eval(await fetch("http://localhost:2005/players"))
-                    if result != self.players:
-                        left = set(self.players) ^ set(result)
-                        for player in left:
-                            if player not in self.players:
-                                await bot.get_channel(self.MC_CHANNEL).send(
-                                    embed=Embed(
-                                        title=f"**{player}** join the server",
-                                        colour=0x90c561
-                                    )
+                result = eval(await fetch("http://localhost:2005/players"))
+                if result != self.players:
+                    left = set(self.players) ^ set(result)
+                    for player in left:
+                        if player not in self.players:
+                            await bot.get_channel(self.MC_CHANNEL).send(
+                                embed=Embed(
+                                    title=f"**{player}** join the server",
+                                    colour=0x90c561
                                 )
+                            )
+                            with MCRcon(ADDRESS, PASSWORD) as rcon:
+                                rcon.connect()
                                 await rcon_title(
                                     rcon,
                                     {"text": "Welcome to", "color": "gold"},
                                     {"text": "SpaceCraft Server", "color": "blue"}
                                 )
-                            else:
-                                await bot.get_channel(self.MC_CHANNEL).send(
-                                    embed=Embed(
-                                        title=f"**{player}** left the server",
-                                        colour=0xf7630c
-                                    )
+                        else:
+                            await bot.get_channel(self.MC_CHANNEL).send(
+                                embed=Embed(
+                                    title=f"**{player}** left the server",
+                                    colour=0xf7630c
                                 )
-                        self.players = result
+                            )
+                    self.players = result
 
-                    await delay(2)
-                except Exception as e:
-                    await delay(3)
+                await delay(2)
+            except Exception as e:
+                await delay(3)
 
     async def on_active(self, args: List[int], message: Message, bot: Client):
         if args in (
-            ['mods'], ['mods', 'list'],
-            ['plugins'], ['list', 'mods']
+                ['mods'], ['mods', 'list'],
+                ['plugins'], ['list', 'mods']
         ):
             with open('mods.json') as f:
                 content = json.load(f)
@@ -132,8 +131,8 @@ class SpaceCraftManager(Command):
             return 0
 
         if args in (
-            ['players'], ['list'], ['online', 'players'],
-            ['players', 'online'], ['online']
+                ['players'], ['list'], ['online', 'players'],
+                ['players', 'online'], ['online']
         ):
             try:
                 if not self.server_ready:
@@ -165,7 +164,6 @@ class SpaceCraftManager(Command):
                 ))
             return 0
         return 1
-
 
 
 commands = [
